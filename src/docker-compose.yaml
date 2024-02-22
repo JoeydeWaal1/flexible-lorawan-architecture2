@@ -11,7 +11,6 @@ services:
       - API_PASSWD
     volumes:
       - ./nginx/error.log:/etc/nginx/error_log.log:rw
-      - /etc/letsencrypt/:/etc/letsencrypt/:ro
     ports:
       - 80:80
       - 443:443
@@ -52,7 +51,6 @@ services:
       - MOSQUITTO_USER=${MOSQUITTO_USER}
       - MOSQUITTO_PASSWD=${MOSQUITTO_PASSWD}
     restart: on-failure:10
-
   grafana:
     container_name: flwsb-grafana
     image: grafana/grafana:latest
@@ -64,7 +62,7 @@ services:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWD}
       - GF_SERVER_DOMAIN=${GRAFANA_SERVER_DOMAIN}
-      - GF_SERVER_ROOT_URL=https://%(domain)s/ # Grafana is behind reverse proxy -> normal HTTPS
+      - GF_SERVER_ROOT_URL=http://localhost/ # Grafana is behind reverse proxy -> normal HTTPS
       - GRAFANA_INFLUX_BUCKET=${INFLUXDB_BUCKET}
       - GRAFANA_INFLUX_TOKEN=${INFLUXDB_TOKEN}
       - GRAFANA_INFLUX_ORG=${INFLUXDB_ORG}
@@ -89,7 +87,7 @@ services:
       - INFLUXDB_BUCKET=${INFLUXDB_BUCKET}
     restart: on-failure:10
     ports:
-      - 127.0.0.1:5000:5000
+      - 0.0.0.0:5000:5000
 
   sensormeasurements:
     container_name: flwsb-sensormeasurements
